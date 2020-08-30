@@ -11,7 +11,19 @@
 <body>
     <script src="dist/umd/vue.js"></script>
     <script>
-        console.log(Vue.fn())
+        let vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    name: 'msg',
+                }
+            }
+        });
+        // console.log(vm.$options)
+        console.log(vm._data.name);
+        setTimeout(() => {
+            vm._data.name = 'tonyTang';
+        }, 1000);
     </script>
 </body>
 
