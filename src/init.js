@@ -1,8 +1,11 @@
 import {
     initState
 } from "./state";
+import {
+    compileToFunction
+} from "./compiler/index.js";
 
-export function initMixin (Vue) {
+export function initMixin(Vue) {
     Vue.prototype._init = function (options) {
         // console.log(options);
         const vm = this;
@@ -12,6 +15,11 @@ export function initMixin (Vue) {
 
         //初始化状态，将数据进行初始化劫持
         initState(vm);
+
+        //页面挂载
+        if (vm.$options.el) {
+            vm.$mount(vm.$options.el);
+        }
 
     }
 
@@ -31,10 +39,13 @@ export function initMixin (Vue) {
             if (!template && el) {
                 //如果没有template必须有el，否则就要提示错误了。
                 template = el.outerHTML;
-
             } else {
                 console.log('el or template not surpport');
             }
+            // console.log(template);
+            //编译原理： 将模版编译成render函数
+            const render = compileToFunction(template);
+            options.render = render;
         }
 
     }
