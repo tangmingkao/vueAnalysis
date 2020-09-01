@@ -14,7 +14,7 @@ export default {
             exclude: 'node_modules/**'
         }),
         serve({
-            open: true,
+            open: false,
             //浏览器端口
             port: 3000,
             contentBase: '',
