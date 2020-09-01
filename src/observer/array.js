@@ -9,9 +9,10 @@ let methods = [
     'sort',
     'splice'
 ];
-
+//函数劫持 -切片编程AOP
 methods.forEach(method => {
     arrayMethods[methods] = function (...args) {
+        console.log(args);
         const result = oldArrayProtoMethods[method].apply(this, args);
         let inserted;
         switch (method) {
@@ -19,8 +20,13 @@ methods.forEach(method => {
             case 'unshift':
                 inserted = args;
             case 'splice':
-                inserted = args.slice(2)
+                inserted = args.slice(2);
+            default:
+                break;
 
+        }
+        if (inserted) {
+            observeArray(inserted);
         }
     };
 });
