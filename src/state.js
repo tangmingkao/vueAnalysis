@@ -1,8 +1,9 @@
 import {
     observer
 } from "./observer/index.js";
+import { proxy } from "./utils/index.js";
 
-export function initState(vm) {
+export function initState (vm) {
     // console.log(vm);
     const opts = vm.$options;
 
@@ -24,31 +25,37 @@ export function initState(vm) {
 
 }
 
-function initData(vm) {
+function initData (vm) {
     //初始化数据
     let data = vm.$options.data;
     data = typeof data == 'function' ? data.call(vm) : data;
     //将data挂载在vm上
     vm._data = data;
     // console.log(data);
+
+    //代理，将vm取值代理到vm._data上取值
+    for (let key in data) {
+        proxy(vm, '_data', key);
+    }
+
     //数据的劫持方案 
     //对象: Object.defineProperty
     //数组: 函数劫持 切片式编程
     observer(data);
 }
 
-function initProps(vm) {
+function initProps (vm) {
     //初始化属性
 }
 
-function initMathods(vm) {
+function initMathods (vm) {
     //初始化方法
 }
 
-function initComputed(vm) {
+function initComputed (vm) {
     //初始化计算属性
 }
 
-function initWatch(vm) {
+function initWatch (vm) {
     //初始化watch
 }
