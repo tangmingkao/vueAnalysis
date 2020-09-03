@@ -4,8 +4,9 @@ import {
 import {
     compileToFunction
 } from "./compiler/index.js";
+import { mountComponent } from "./lifecycle";
 
-export function initMixin(Vue) {
+export function initMixin (Vue) {
     Vue.prototype._init = function (options) {
         // console.log(options);
         const vm = this;
@@ -47,6 +48,11 @@ export function initMixin(Vue) {
             const render = compileToFunction(template);
             options.render = render;
         }
+
+        // 渲染时用的都是这个render方法
+
+        // 需要挂载这个组件
+        mountComponent(vm, el);
 
     }
 }
