@@ -1,4 +1,4 @@
-export function renderMinxin (Vue) {
+export function renderMinxin(Vue) {
     //创建虚拟元素节点
     Vue.prototype._c = function () {
         return createElement(...arguments);
@@ -21,16 +21,20 @@ export function renderMinxin (Vue) {
     }
 }
 
-function createElement (tag, data = {}, ...children) {
+function createElement(tag, data = {}, ...children) {
+    let key = data.key;
+    if (key) {
+        delete data.key;
+    }
     return vnode(tag, data, data.key, children);
 }
 
-function createTextVnode (text) {
+function createTextVnode(text) {
     return vnode(undefined, undefined, undefined, undefined, text);
 }
 
 //用来产生虚拟dom
-function vnode (tag, data, key, children, text) {
+function vnode(tag, data, key, children, text) {
     return {
         tag,
         data,
