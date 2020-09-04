@@ -16,6 +16,16 @@
 
     <script src="dist/umd/vue.js"></script>
     <script>
+        Vue.mixin({
+            created() {
+                console.log('created .....');
+            },
+        });
+        Vue.mixin({
+            created() {
+                console.log('created .....');
+            },
+        });
         let vm = new Vue({
             el: '#app',
             data() {
@@ -23,7 +33,11 @@
                     name: 'msg',
                     arrNode: [1, 2, 3, 4],
                 }
-            }
+            },
+            //生命周期 就是回调函数 先订阅好，后续会触发此方法
+            created() {
+                console.log('my created ....');
+            },
         });
         // console.log(vm.$options)
         // console.log(vm._data.name);
@@ -32,6 +46,8 @@
             vm._data.arrNode.push(5);
             vm._update(vm._render());
         }, 2000);
+
+        // window.vm = vm;
 
         // console.log(vm.$options)
         // vm.$options.render();

@@ -42,11 +42,11 @@ function defineReactive (data, key, value) {
     // console.log(data);
     Object.defineProperty(data, key, {
         get () {
-            console.log('用户获取值啦');
+            // console.log('用户获取值啦');
             return value;
         },
         set (newValue) {
-            console.log('用户设置值啦');
+            // console.log('用户设置值啦');
             if (newValue == value) return;
             observer(newValue);
             value = newValue;
