@@ -9,6 +9,6 @@ export function initGlobalApi(Vue) {
         // console.log(mixin);
         //合并对象 (先考虑生命周期，不考虑其他合并 data computed watch 等)
         this.options = mergeOptions(this.options, mixin);
-        console.log(this.options)
+        // console.log(this.options, mixin)
     }
 }

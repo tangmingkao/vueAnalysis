@@ -27,9 +27,9 @@ export const LIFECYCLE_HOOKS = [
     'destroyed'
 ];
 let strats = {};
-strats.data = function () {
-
-};
+strats.data = function (parentVal, childValue) {
+    return childValue; // 这里应该有合并data的策略
+}
 strats.computed = function () {
 
 };
@@ -74,9 +74,10 @@ export function mergeOptions(parent, child) {
     function mergeField(key) {
         //根据key 不同的策略来进行合并
         if (strats[key]) {
-            options = strats[key](parent[key], child[key]);
+            options[key] = strats[key](parent[key], child[key]);
         } else {
             //todo 默认合并
+            options[key] = child[key]
         }
     }
 

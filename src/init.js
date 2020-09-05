@@ -4,23 +4,36 @@ import {
 import {
     compileToFunction
 } from "./compiler/index.js";
-import { mountComponent } from "./lifecycle";
+import {
+    mountComponent,
+    callHook
+} from "./lifecycle";
+import {
+    mergeOptions
+} from "./utils/index.js";
 
-export function initMixin (Vue) {
+export function initMixin(Vue) {
     Vue.prototype._init = function (options) {
         // console.log(options);
         const vm = this;
-        vm.$options = options;
-
+        //将用户自定义的options和全局的options进行合并
+        vm.$options = mergeOptions(vm.constructor.options, options);
+        // console.log(vm.$options);
         //vue里面核心特效 响应式数据原理
-
+        //初始化状态之前调用生命周期的beforeCreate函数
+        callHook(vm, 'beforeCreate');
         //初始化状态，将数据进行初始化劫持
         initState(vm);
-
+        //初始化状态之后调用created
+        callHook(vm, 'created');
+        //页面挂载之前调用beforeMount
+        callHook(vm, 'beforeMount');
         //页面挂载
         if (vm.$options.el) {
             vm.$mount(vm.$options.el);
         }
+        //页面挂载之后调用mounted
+        callHook(vm, 'mounted');
 
     }
 
