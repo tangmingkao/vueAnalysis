@@ -10,7 +10,7 @@
 
 <body>
     <div id="app" style="color:red">
-        hello {{name}}
+        hello {{name}} {{name}} {{arrNode}}
         <div style="color: green;font-size: 24px;">hello</div>
     </div>
 
@@ -45,7 +45,6 @@
         setTimeout(() => {
             vm._data.name = 'tonyTang';
             vm._data.arrNode.push(5);
-            vm._update(vm._render());
         }, 2000);
 
         // window.vm = vm;

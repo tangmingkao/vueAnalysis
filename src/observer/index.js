@@ -1,7 +1,10 @@
 import {
     arrayMethods
 } from "./array";
-import { defineProperty } from "../utils/index.js";
+import {
+    defineProperty
+} from "../utils/index.js";
+import Dep from "./dep";
 
 class Observer {
     constructor(value) {
@@ -23,12 +26,12 @@ class Observer {
             this.walk(value);
         }
     }
-    observeArray (value) {
+    observeArray(value) {
         for (let i = 0; i < value.length; i++) {
             observe(value[i]);
         }
     }
-    walk (data) {
+    walk(data) {
         //获取对象的属性
         let keys = Object.keys(data);
         keys.forEach((key) => {
@@ -38,22 +41,31 @@ class Observer {
     }
 }
 
-function defineReactive (data, key, value) {
+function defineReactive(data, key, value) {
     // console.log(data);
+    //每个属性都有一个dep
+    let dep = new Dep();
     Object.defineProperty(data, key, {
-        get () {
+        //当页面取值时候说明页面用来渲染啦。
+        get() {
+            if (Dep.target) {
+                //依赖收集
+                dep.depend();
+            }
             // console.log('用户获取值啦');
             return value;
         },
-        set (newValue) {
+        set(newValue) {
             // console.log('用户设置值啦');
             if (newValue == value) return;
             observer(newValue);
             value = newValue;
+            //依赖更新
+            dep.notify();
         }
     });
 }
-export function observer (data) {
+export function observer(data) {
     // console.log(data);
     //是对象并且不是null才观测
     if (typeof data !== 'object' || data === null) {

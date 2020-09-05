@@ -26,15 +26,10 @@ export function initMixin(Vue) {
         initState(vm);
         //初始化状态之后调用created
         callHook(vm, 'created');
-        //页面挂载之前调用beforeMount
-        callHook(vm, 'beforeMount');
         //页面挂载
         if (vm.$options.el) {
             vm.$mount(vm.$options.el);
         }
-        //页面挂载之后调用mounted
-        callHook(vm, 'mounted');
-
     }
 
     Vue.prototype.$mount = function (el) {
