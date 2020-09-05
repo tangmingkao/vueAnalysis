@@ -26,6 +26,7 @@ class Watcher {
     }
     update() {
         this.getter();
+        console.log(this.id)
     }
     addDep(dep) {
         let id = dep.id;
