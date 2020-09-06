@@ -1,4 +1,4 @@
-export function proxy(vm, data, key) {
+export function _proxy(vm, data, key) {
     Object.defineProperty(vm, key, {
         get() {
             return vm[data][key];

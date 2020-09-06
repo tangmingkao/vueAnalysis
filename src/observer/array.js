@@ -13,8 +13,8 @@ let methods = [
 ];
 //函数劫持 -切片编程AOP
 methods.forEach(method => {
-    arrayMethods[methods] = function (...args) {
-        console.log(args);
+    arrayMethods[method] = function (...args) {
+        // console.log(args, '-----');
         const result = oldArrayProtoMethods[method].apply(this, args);
         let ob = this.__ob__;
         let inserted;
@@ -30,6 +30,7 @@ methods.forEach(method => {
         if (inserted) {
             ob.observeArray(inserted);
         }
+        ob.dep.notify();
         return result;
     };
 });

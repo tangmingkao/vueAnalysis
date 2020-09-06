@@ -10,22 +10,12 @@
 
 <body>
     <div id="app" style="color:red">
-        hello {{name}} {{name}} {{arrNode}}
+        hello {{name}}{{arrNode}}
         <div style="color: green;font-size: 24px;">hello</div>
     </div>
 
     <script src="dist/umd/vue.js"></script>
     <script>
-        Vue.mixin({
-            created() {
-                console.log('created mixin1.....');
-            },
-        });
-        Vue.mixin({
-            created() {
-                console.log('created minxin2.....');
-            },
-        });
         let vm = new Vue({
             el: '#app',
             data() {
@@ -47,8 +37,8 @@
             vm._data.arrNode.push(5);
         }, 2000);
 
-
-        // console.log(vm.$options)
+        window.vm = vm;
+        console.log(vm)
         // vm.$options.render();
     </script>
 </body>

@@ -8,6 +8,7 @@ import Dep from "./dep";
 
 class Observer {
     constructor(value) {
+        this.dep = new Dep();
         //将类Observer的this挂载在观测对象的__ob__上
         // Object.defineProperty(value, '___ob__', {
         //     enumerable: false,
@@ -18,6 +19,7 @@ class Observer {
         // console.log(value);
         //如果是数组，走数组重写的方法
         if (Array.isArray(value)) {
+            // console.log(value)
             value.__proto__ = arrayMethods;
             this.observeArray(value);
 
@@ -28,7 +30,7 @@ class Observer {
     }
     observeArray(value) {
         for (let i = 0; i < value.length; i++) {
-            observe(value[i]);
+            observer(value[i]);
         }
     }
     walk(data) {
@@ -43,6 +45,7 @@ class Observer {
 
 function defineReactive(data, key, value) {
     // console.log(data);
+    let childDep = observer(value);
     //每个属性都有一个dep
     let dep = new Dep();
     Object.defineProperty(data, key, {
@@ -51,12 +54,16 @@ function defineReactive(data, key, value) {
             if (Dep.target) {
                 //依赖收集
                 dep.depend();
+                if (childDep) {
+                    childDep.dep.depend();
+                }
+
             }
             // console.log('用户获取值啦');
             return value;
         },
         set(newValue) {
-            // console.log('用户设置值啦');
+            console.log('用户设置值啦');
             if (newValue == value) return;
             observer(newValue);
             value = newValue;
@@ -65,11 +72,14 @@ function defineReactive(data, key, value) {
         }
     });
 }
-export function observer(data) {
+export function observer(value) {
     // console.log(data);
     //是对象并且不是null才观测
-    if (typeof data !== 'object' || data === null) {
-        return data;
+    if (typeof value !== 'object' || value === null) {
+        return;
     }
-    return new Observer(data);
+    if (value.__ob__ && value.__ob__ instanceof Observer) {
+        return value.__ob__;
+    }
+    return new Observer(value);
 }
