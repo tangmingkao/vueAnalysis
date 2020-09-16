@@ -32,22 +32,18 @@
                     },
                 }
             },
+            watch: {
+                'name'(newValue, oldValue) {
+                    console.log(newValue);
+                }
+            },
             //生命周期 就是回调函数 先订阅好，后续会触发此方法
             created() {
-                console.log('my created ....');
+                // console.log('my created ....');
             },
         });
-
-        // console.log(vm.$options)
-        // console.log(vm._data.name);
         setTimeout(() => {
-            //批处理  vue异步更新，更新数据后不能立马拿到新的节点
             vm._data.name = 'tonyTang';
-            vm._data.arrNode.push(5);
-            vm._data.arrNode.push(5);
-            vm._data.arrNode.push(5);
-            vm._data.arrNode.push(5);
-            vm._data.arrNode.push(5);
         }, 2000);
     </script>
 </body>

@@ -1,10 +1,11 @@
 import {
     observer
-} from "./observer/index.js";
+} from "./observer/index";
 import {
     _proxy,
     nextTick
-} from "./utils/index.js";
+} from "./utils/index";
+import Watcher from './observer/watcher';
 
 export function initState(vm) {
     // console.log(vm);
@@ -61,10 +62,43 @@ function initComputed(vm) {
 
 function initWatch(vm) {
     //初始化watch
+    let watch = vm.$options.watch;
+    console.log(watch);
+    for (let key in watch) {
+        let handler = watch[key]; //handler 可能是数组、字符串、对象、函数
+        if (Array.isArray(handler)) { //可能是数组
+            handler.forEach((handle) => {
+                createWatcher(vm, key, handle);
+            });
+        } else { //字符串、对象、函数
+            createWatcher(vm, key, handler);
+        }
+    }
+}
+
+function createWatcher(vm, exprOrFn, handler, options = {}) { //options 可以表示是否是用户
+    if (typeof handler == 'object') {
+        options = handler;
+        handler = handler.handler; //是一个函数
+    } else if (typeof handler == 'string') {
+        handler = vm[handler]; //将实例的方法作为handler
+    }
+    // key handler 用户传入的选项
+    return vm.$watch(exprOrFn, handler, options);
 }
 
 export function stateMixin(vm) {
     vm.prototype.$nextTick = function (cd) {
         nextTick(cb);
+    };
+    vm.prototype.$watch = function (exprOrFn, cb, options) {
+        // console.log(exprOrFn, handler, options);
+
+        //数据应该依赖这个watcher 数据变化后应该让watcher重新执行
+        let watcher = new Watcher(vm, exprOrFn, cb, options);
+        if (options.immediate) {
+            //如果是immediate 需要立即执行
+            cb();
+        }
     };
 }

@@ -30,12 +30,12 @@ let strats = {};
 strats.data = function (parentVal, childValue) {
     return childValue; // 这里应该有合并data的策略
 }
-strats.computed = function () {
+// strats.computed = function () {
 
-};
-strats.watch = function () {
+// };
+// strats.watch = function () {
 
-};
+// };
 //生命周期的合并
 function mergeHook(parentVal, childVal) {
     if (childVal) {
