@@ -2,6 +2,9 @@ import {
     pushTarget,
     popTarget
 } from "./dep";
+import {
+    nextTick
+} from "../utils/index";
 
 let id = 0;
 class Watcher {
@@ -24,9 +27,16 @@ class Watcher {
         this.getter(); //调用exprOrFn 渲染页面 render方法
         popTarget();
     }
+    run() {
+        this.get();
+    }
     update() {
-        this.getter();
-        console.log(this.id)
+        //这里不要每次都调用get方法，get方法会每次重新渲染页面
+        // this.get();
+        //缓存watcher
+        queueWatcher(this);
+
+        // console.log(this.id)
     }
     addDep(dep) {
         let id = dep.id;
@@ -35,6 +45,39 @@ class Watcher {
             this.depsId.add(id);
             dep.addSub(this);
         }
+    }
+}
+
+//将需要批量更新的watcher 存在一个队列中，稍后让watcher执行
+let queue = [];
+let has = {};
+let pending = false;
+
+function flushSchedulerQueue() {
+    queue.forEach(watcher => {
+        watcher.run();
+        watcher.cb();
+    });
+    //清空watcher队列为啦下次使用
+    queue = [];
+    //清空标示对象
+    has = {};
+    pending = false;
+}
+
+function queueWatcher(watcher) {
+    // console.log(watcher.id);
+    const id = watcher.id;
+    //利用id对watcher去重
+    if (!has[id]) {
+        queue.push(watcher);
+        has[id] = true;
+        //等待所有同步代码执行完毕后在执行
+        if (!pending) {
+            nextTick(flushSchedulerQueue);
+            pending = true;
+        }
+
     }
 }
 

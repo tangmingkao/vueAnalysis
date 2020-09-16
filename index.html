@@ -23,7 +23,9 @@
             data() {
                 return {
                     name: 'msg',
-                    arrNode: [1, 2, 3, 4, { a: 2 }],
+                    arrNode: [1, 2, 3, 4, {
+                        a: 2
+                    }],
                     tony: {
                         name: 'tony',
                         firstName: 'tang',
@@ -39,14 +41,14 @@
         // console.log(vm.$options)
         // console.log(vm._data.name);
         setTimeout(() => {
+            //批处理  vue异步更新，更新数据后不能立马拿到新的节点
             vm._data.name = 'tonyTang';
             vm._data.arrNode.push(5);
-            vm._data.tony = { c: 100, d: 200 };
+            vm._data.arrNode.push(5);
+            vm._data.arrNode.push(5);
+            vm._data.arrNode.push(5);
+            vm._data.arrNode.push(5);
         }, 2000);
-
-        window.vm = vm;
-        console.log(vm)
-        // vm.$options.render();
     </script>
 </body>
 

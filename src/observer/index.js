@@ -28,12 +28,12 @@ class Observer {
             this.walk(value);
         }
     }
-    observeArray (value) {
+    observeArray(value) {
         for (let i = 0; i < value.length; i++) {
             observer(value[i]);
         }
     }
-    walk (data) {
+    walk(data) {
         //获取对象的属性
         let keys = Object.keys(data);
         keys.forEach((key) => {
@@ -43,15 +43,15 @@ class Observer {
     }
 }
 
-function defineReactive (data, key, value) {
+function defineReactive(data, key, value) {
     // console.log(data);
     let childDep = observer(value);
     //每个属性都有一个dep
     let dep = new Dep();
-    console.log('----------', value, dep);
+    // console.log('----------', value, dep);
     Object.defineProperty(data, key, {
         //当页面取值时候说明页面用来渲染啦。
-        get () {
+        get() {
             if (Dep.target) {
                 //依赖收集
                 dep.depend();
@@ -63,8 +63,8 @@ function defineReactive (data, key, value) {
             // console.log('用户获取值啦');
             return value;
         },
-        set (newValue) {
-            console.log('用户设置值啦');
+        set(newValue) {
+            // console.log('用户设置值啦');
             if (newValue == value) return;
             observer(newValue);
             value = newValue;
@@ -73,7 +73,7 @@ function defineReactive (data, key, value) {
         }
     });
 }
-export function observer (value) {
+export function observer(value) {
     // console.log(data);
     //是对象并且不是null才观测
     if (typeof value !== 'object' || value === null) {

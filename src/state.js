@@ -2,7 +2,8 @@ import {
     observer
 } from "./observer/index.js";
 import {
-    _proxy
+    _proxy,
+    nextTick
 } from "./utils/index.js";
 
 export function initState(vm) {
@@ -60,4 +61,10 @@ function initComputed(vm) {
 
 function initWatch(vm) {
     //初始化watch
+}
+
+export function stateMixin(vm) {
+    vm.prototype.$nextTick = function (cd) {
+        nextTick(cb);
+    };
 }

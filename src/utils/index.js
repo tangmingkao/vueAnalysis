@@ -80,7 +80,54 @@ export function mergeOptions(parent, child) {
             options[key] = child[key]
         }
     }
-
     return options;
+}
+
+let callbacks = [];
+let pending = false;
+
+function flushCallbacks() {
+    while (callbacks.length) {
+        let cb = callbacks.pop();
+        cb();
+    }
+    pending = false;
+
+}
+let timerFunc;
+if (Promise) {
+    timerFunc = () => {
+        //异步处理更新
+        Promise.resolve().then(flushCallbacks);
+    };
+} else if (MutationObserver) {
+    //MutationObserver可以监控dom变化。变化完后是异步更新
+    let observe = new MutationObserver(flushCallbacks);
+    let textNode = document.createTextNode(1);
+    observe.observe(textNode, {
+        characterData: true
+    });
+    timerFunc = () => {
+        textNode.textContent = 2;
+    };
+} else if (setImmediate) {
+    timerFunc = () => {
+        setImmediate(flushCallbacks);
+    }
+} else {
+    timerFunc = () => {
+        setTimeout(flushCallbacks, 0);
+    }
+}
+
+//内部调用nextTick 用户也会调用 但是异步只需要一次
+export function nextTick(cb) {
+    callbacks.push(cb);
+    //vue3中nextTick原理就是promise.then 没有做兼容
+    //这个方法就是异步更新
+    if (!pending) {
+        timerFunc();
+        pending = true;
+    }
 
 }
