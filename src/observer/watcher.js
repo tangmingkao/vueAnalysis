@@ -37,23 +37,21 @@ class Watcher {
         this.value = this.get();
         // console.log(this.value);
     }
-    get() {
-        pushTarget(this); //this是当前】的watcher实例
+    get () {
+        pushTarget(this); //this是当前 的watcher实例
         let result = this.getter(); //调用exprOrFn 渲染页面 render方法
         popTarget();
 
         return result;
     }
-    run() {
+    run () {
         let newValue = this.get();
         let oldValue = this.value;
         if (this.user) {
             this.cb.call(this.vm, newValue, oldValue);
-        } else {
-
         }
     }
-    update() {
+    update () {
         //这里不要每次都调用get方法，get方法会每次重新渲染页面
         // this.get();
         //缓存watcher
@@ -61,7 +59,7 @@ class Watcher {
 
         // console.log(this.id)
     }
-    addDep(dep) {
+    addDep (dep) {
         let id = dep.id;
         if (!this.depsId.has(id)) {
             this.deps.push(dep);
@@ -76,7 +74,7 @@ let queue = [];
 let has = {};
 let pending = false;
 
-function flushSchedulerQueue() {
+function flushSchedulerQueue () {
     queue.forEach(watcher => {
         watcher.run();
         watcher.cb();
@@ -88,7 +86,7 @@ function flushSchedulerQueue() {
     pending = false;
 }
 
-function queueWatcher(watcher) {
+function queueWatcher (watcher) {
     // console.log(watcher.id);
     const id = watcher.id;
     //利用id对watcher去重

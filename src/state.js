@@ -7,7 +7,7 @@ import {
 } from "./utils/index";
 import Watcher from './observer/watcher';
 
-export function initState(vm) {
+export function initState (vm) {
     // console.log(vm);
     const opts = vm.$options;
 
@@ -29,7 +29,7 @@ export function initState(vm) {
 
 }
 
-function initData(vm) {
+function initData (vm) {
     //初始化数据
     let data = vm.$options.data;
     data = typeof data == 'function' ? data.call(vm) : data;
@@ -48,19 +48,19 @@ function initData(vm) {
     observer(data);
 }
 
-function initProps(vm) {
+function initProps (vm) {
     //初始化属性
 }
 
-function initMathods(vm) {
+function initMathods (vm) {
     //初始化方法
 }
 
-function initComputed(vm) {
+function initComputed (vm) {
     //初始化计算属性
 }
 
-function initWatch(vm) {
+function initWatch (vm) {
     //初始化watch
     let watch = vm.$options.watch;
     console.log(watch);
@@ -76,7 +76,7 @@ function initWatch(vm) {
     }
 }
 
-function createWatcher(vm, exprOrFn, handler, options = {}) { //options 可以表示是否是用户
+function createWatcher (vm, exprOrFn, handler, options = {}) { //options 可以表示是否是用户
     if (typeof handler == 'object') {
         options = handler;
         handler = handler.handler; //是一个函数
@@ -87,7 +87,7 @@ function createWatcher(vm, exprOrFn, handler, options = {}) { //options 可以�
     return vm.$watch(exprOrFn, handler, options);
 }
 
-export function stateMixin(vm) {
+export function stateMixin (vm) {
     vm.prototype.$nextTick = function (cd) {
         nextTick(cb);
     };
@@ -95,7 +95,8 @@ export function stateMixin(vm) {
         // console.log(exprOrFn, handler, options);
 
         //数据应该依赖这个watcher 数据变化后应该让watcher重新执行
-        let watcher = new Watcher(vm, exprOrFn, cb, options);
+        //必须用this不能用vm
+        let watcher = new Watcher(this, exprOrFn, cb, { ...options, user: true });
         if (options.immediate) {
             //如果是immediate 需要立即执行
             cb();
