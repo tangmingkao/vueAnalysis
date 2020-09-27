@@ -8,13 +8,14 @@ import {
 
 let id = 0;
 class Watcher {
-    constructor(vm, exprOrFn, cb, options = {}) {
+    constructor(vm, exprOrFn, cb, options) {
+        // console.log(options);
         this.vm = vm;
         this.exprOrFn = exprOrFn;
         this.cb = cb;
         this.options = options;
         this.user = options.user; //这是用户watcher
-        this.isWatcher = !!options; //是渲染watcher
+        this.isWatcher = typeof options === 'boolean'; //是渲染watcher
         this.id = id++;
         this.deps = []; // watcher记录多个dep
         this.depsId = new Set();
@@ -37,21 +38,21 @@ class Watcher {
         this.value = this.get();
         // console.log(this.value);
     }
-    get () {
+    get() {
         pushTarget(this); //this是当前 的watcher实例
         let result = this.getter(); //调用exprOrFn 渲染页面 render方法
         popTarget();
 
         return result;
     }
-    run () {
+    run() {
         let newValue = this.get();
         let oldValue = this.value;
         if (this.user) {
             this.cb.call(this.vm, newValue, oldValue);
         }
     }
-    update () {
+    update() {
         //这里不要每次都调用get方法，get方法会每次重新渲染页面
         // this.get();
         //缓存watcher
@@ -59,7 +60,7 @@ class Watcher {
 
         // console.log(this.id)
     }
-    addDep (dep) {
+    addDep(dep) {
         let id = dep.id;
         if (!this.depsId.has(id)) {
             this.deps.push(dep);
@@ -74,10 +75,13 @@ let queue = [];
 let has = {};
 let pending = false;
 
-function flushSchedulerQueue () {
+function flushSchedulerQueue() {
     queue.forEach(watcher => {
         watcher.run();
-        watcher.cb();
+        if (watcher.isWatcher) {
+            watcher.cb();
+        }
+
     });
     //清空watcher队列为啦下次使用
     queue = [];
@@ -86,7 +90,7 @@ function flushSchedulerQueue () {
     pending = false;
 }
 
-function queueWatcher (watcher) {
+function queueWatcher(watcher) {
     // console.log(watcher.id);
     const id = watcher.id;
     //利用id对watcher去重
